@@ -6,9 +6,13 @@ import {
     Center,
     Container,
     Group,
-    MantineProvider,
+    Modal,
+    SimpleGrid,
+    Stack,
     Table,
+    TextInput,
     Title,
+    MantineProvider,
 } from '@mantine/core'
 import { theme } from './theme'
 import { TbPlus } from 'react-icons/tb'
@@ -16,6 +20,11 @@ import { useEffect, useState } from 'react'
 
 export default function App() {
     const [users, setUsers] = useState([])
+    const [open, setOpen] = useState(false)
+    const [name, setName] = useState('')
+    const [email, setEmail] = useState('')
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState('')
 
     useEffect(() => {
         fetch('http://localhost:8080/users')
@@ -26,6 +35,39 @@ export default function App() {
             })
             .catch((error) => console.error('Error fetching users:', error))
     }, [])
+
+    const handleAddUser = () => {
+        setLoading(true)
+        setError('')
+
+        fetch('http://localhost:8080/users', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ name, email }),
+        })
+            .then((res) => {
+                if (!res.ok) {
+                    return res.text().then((text) => {
+                        throw new Error(text)
+                    })
+                }
+                return res.json()
+            })
+            .then((data) => {
+                setUsers((prevUsers) => [...prevUsers, data])
+                setOpen(false)
+                setName('')
+                setEmail('')
+            })
+            .catch((error) => {
+                console.error('Error adding user:', error)
+                setError(error.message || 'Error adding user')
+            })
+            .finally(() => setLoading(false))
+    }
+
     return (
         <MantineProvider theme={theme}>
             <Box component="main" mih={'100vh'}>
@@ -34,7 +76,10 @@ export default function App() {
                         <Card w={'100%'} withBorder>
                             <Group justify="space-between">
                                 <Title order={1}>Autorzy</Title>
-                                <Button leftSection={<TbPlus />}>
+                                <Button
+                                    leftSection={<TbPlus />}
+                                    onClick={() => setOpen(true)}
+                                >
                                     Dodaj Autora
                                 </Button>
                                 {users.length === 0 && <p>Brak autorów</p>}
@@ -59,6 +104,32 @@ export default function App() {
                             </Group>
                         </Card>
                     </Center>
+                    <Modal
+                        title={'Dodaj autora'}
+                        opened={open}
+                        onClose={() => setOpen(false)}
+                    >
+                        <Stack>
+                            <SimpleGrid cols={2}>
+                                <TextInput
+                                    label="Imię"
+                                    placeholder="Wpisz imię"
+                                    onChange={(e) => setName(e.target.value)}
+                                    value={name}
+                                />
+                                <TextInput
+                                    label="E-mail"
+                                    placeholder="Wpisz e-mail"
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    value={email}
+                                />
+                            </SimpleGrid>
+                            {error && <p style={{ color: 'red' }}>{error}</p>}
+                            <Button onClick={handleAddUser} loading={loading}>
+                                Dodaj
+                            </Button>
+                        </Stack>
+                    </Modal>
                 </Container>
             </Box>
         </MantineProvider>
