@@ -13,18 +13,21 @@ import {
     TextInput,
     Title,
     MantineProvider,
+    ActionIcon,
 } from '@mantine/core'
 import { theme } from './theme'
-import { TbPlus } from 'react-icons/tb'
+import { TbPencil, TbPlus, TbTrash } from 'react-icons/tb'
 import { useEffect, useState } from 'react'
 
 export default function App() {
     const [users, setUsers] = useState([])
     const [open, setOpen] = useState(false)
+    const [deleteOpen, setDeleteOpen] = useState(false)
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
+    const [userToDelete, setUserToDelete] = useState(null)
 
     useEffect(() => {
         fetch('http://localhost:8080/users')
@@ -68,6 +71,33 @@ export default function App() {
             .finally(() => setLoading(false))
     }
 
+    const handleDeleteUser = (user) => {
+        setUserToDelete(user)
+        setDeleteOpen(true)
+    }
+
+    const confirmDeleteUser = () => {
+        fetch(`http://localhost:8080/users/${userToDelete.id}`, {
+            method: 'DELETE',
+        })
+            .then((res) => {
+                if (!res.ok) {
+                    return res.text().then((text) => {
+                        throw new Error(text)
+                    })
+                }
+                setUsers((prevUsers) =>
+                    prevUsers.filter((user) => user.id !== userToDelete.id)
+                )
+                setDeleteOpen(false)
+                setUserToDelete(null)
+            })
+            .catch((error) => {
+                console.error('Error deleting user:', error)
+                setError(error.message || 'Error deleting user')
+            })
+    }
+
     return (
         <MantineProvider theme={theme}>
             <Box component="main" mih={'100vh'}>
@@ -88,6 +118,7 @@ export default function App() {
                                         <Table.Tr>
                                             <Table.Th>Imię</Table.Th>
                                             <Table.Th>Nazwisko</Table.Th>
+                                            <Table.Th></Table.Th>
                                         </Table.Tr>
                                     </Table.Thead>
                                     <Table.Tbody>
@@ -96,6 +127,24 @@ export default function App() {
                                                 <Table.Td>{user.name}</Table.Td>
                                                 <Table.Td>
                                                     {user.email}
+                                                </Table.Td>
+                                                <Table.Td>
+                                                    <Group justify="flex-end">
+                                                        <ActionIcon
+                                                            variant="outline"
+                                                            color="red"
+                                                            onClick={() =>
+                                                                handleDeleteUser(
+                                                                    user
+                                                                )
+                                                            }
+                                                        >
+                                                            <TbTrash />
+                                                        </ActionIcon>
+                                                        <ActionIcon variant="outline">
+                                                            <TbPencil />
+                                                        </ActionIcon>
+                                                    </Group>
                                                 </Table.Td>
                                             </Table.Tr>
                                         ))}
@@ -128,6 +177,26 @@ export default function App() {
                             <Button onClick={handleAddUser} loading={loading}>
                                 Dodaj
                             </Button>
+                        </Stack>
+                    </Modal>
+                    <Modal
+                        title={'Potwierdź usunięcie'}
+                        opened={deleteOpen}
+                        onClose={() => setDeleteOpen(false)}
+                    >
+                        <Stack>
+                            <p>Czy na pewno chcesz usunąć tego użytkownika?</p>
+                            <Group justify="flex-end">
+                                <Button
+                                    variant="outline"
+                                    onClick={() => setDeleteOpen(false)}
+                                >
+                                    Anuluj
+                                </Button>
+                                <Button color="red" onClick={confirmDeleteUser}>
+                                    Usuń
+                                </Button>
+                            </Group>
                         </Stack>
                     </Modal>
                 </Container>
