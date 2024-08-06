@@ -23,11 +23,13 @@ export default function App() {
     const [users, setUsers] = useState([])
     const [open, setOpen] = useState(false)
     const [deleteOpen, setDeleteOpen] = useState(false)
+    const [editOpen, setEditOpen] = useState(false)
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
     const [userToDelete, setUserToDelete] = useState(null)
+    const [userToEdit, setUserToEdit] = useState(null)
 
     useEffect(() => {
         fetch('http://localhost:8080/users')
@@ -71,6 +73,50 @@ export default function App() {
             .finally(() => setLoading(false))
     }
 
+    const handleEditUser = (user) => {
+        setUserToEdit(user)
+        setName(user.name)
+        setEmail(user.email)
+        setEditOpen(true)
+    }
+
+    const confirmEditUser = () => {
+        setLoading(true)
+        setError('')
+
+        fetch(`http://localhost:8080/users/${userToEdit.id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ name, email }),
+        })
+            .then((res) => {
+                if (!res.ok) {
+                    return res.text().then((text) => {
+                        throw new Error(text)
+                    })
+                }
+                return res.json()
+            })
+            .then((data) => {
+                setUsers((prevUsers) =>
+                    prevUsers.map((user) =>
+                        user.id === userToEdit.id ? data : user
+                    )
+                )
+                setEditOpen(false)
+                setUserToEdit(null)
+                setName('')
+                setEmail('')
+            })
+            .catch((error) => {
+                console.error('Error editing user:', error)
+                setError(error.message || 'Error editing user')
+            })
+            .finally(() => setLoading(false))
+    }
+
     const handleDeleteUser = (user) => {
         setUserToDelete(user)
         setDeleteOpen(true)
@@ -86,9 +132,12 @@ export default function App() {
                         throw new Error(text)
                     })
                 }
-                setUsers((prevUsers) =>
-                    prevUsers.filter((user) => user.id !== userToDelete.id)
-                )
+                setUsers((prevUsers) => {
+                    if (!userToDelete) return prevUsers
+                    return prevUsers.filter(
+                        (user) => user.id !== userToDelete.id
+                    )
+                })
                 setDeleteOpen(false)
                 setUserToDelete(null)
             })
@@ -141,7 +190,14 @@ export default function App() {
                                                         >
                                                             <TbTrash />
                                                         </ActionIcon>
-                                                        <ActionIcon variant="outline">
+                                                        <ActionIcon
+                                                            variant="outline"
+                                                            onClick={() =>
+                                                                handleEditUser(
+                                                                    user
+                                                                )
+                                                            }
+                                                        >
                                                             <TbPencil />
                                                         </ActionIcon>
                                                     </Group>
@@ -197,6 +253,32 @@ export default function App() {
                                     Usuń
                                 </Button>
                             </Group>
+                        </Stack>
+                    </Modal>
+                    <Modal
+                        title={'Edytuj autora'}
+                        opened={editOpen}
+                        onClose={() => setEditOpen(false)}
+                    >
+                        <Stack>
+                            <SimpleGrid cols={2}>
+                                <TextInput
+                                    label="Imię"
+                                    placeholder="Wpisz imię"
+                                    onChange={(e) => setName(e.target.value)}
+                                    value={name}
+                                />
+                                <TextInput
+                                    label="E-mail"
+                                    placeholder="Wpisz e-mail"
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    value={email}
+                                />
+                            </SimpleGrid>
+                            {error && <p style={{ color: 'red' }}>{error}</p>}
+                            <Button onClick={confirmEditUser} loading={loading}>
+                                Edytuj
+                            </Button>
                         </Stack>
                     </Modal>
                 </Container>
