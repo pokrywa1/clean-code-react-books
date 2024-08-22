@@ -6,7 +6,7 @@ This project aims to demonstrate how to progressively transform code written in 
 
 ## Branch Structure
 
-- **`01-employee-crud`** - The initial branch containing the base code written with poor practices. This is the starting point for the refactoring process.
+- **`01-data-fetching`** - The initial branch containing the base code written with poor practices. This is the starting point for the refactoring process.
 - **Additional branches** - Further branches demonstrating the refactoring steps will be added soon.
   
 ## How to Use the Project
