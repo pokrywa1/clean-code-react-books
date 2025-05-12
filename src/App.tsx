@@ -19,6 +19,7 @@ import {
 import { theme } from './theme'
 import { TbPencil, TbPlus, TbTrash } from 'react-icons/tb'
 import { useEffect, useState } from 'react'
+import { addBook } from './api/books/addBook'
 
 export default function App() {
     const [users, setUsers] = useState([])
@@ -118,12 +119,7 @@ export default function App() {
     const handleAddBook = () => {
         setLoading(true)
         setError('')
-        fetch('http://localhost:8080/books', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ title, genre, author_id: authorId }),
-        })
-            .then((res) => res.json())
+        addBook({ title, genre, author_id: authorId })
             .then((data) => {
                 setBooks((prev) => [...prev, data])
                 setOpenBook(false)
