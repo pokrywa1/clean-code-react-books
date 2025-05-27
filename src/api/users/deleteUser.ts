@@ -1,4 +1,5 @@
-export const deleteUser = (id) =>
-    fetch(`${API}/${id}`, {
+export const deleteUser = (id) => {
+    return fetch(`http://localhost:8080/users/${id}`, {
         method: 'DELETE',
     })
+}
