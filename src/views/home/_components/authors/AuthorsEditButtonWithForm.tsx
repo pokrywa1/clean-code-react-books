@@ -2,40 +2,43 @@ import { useState } from 'react'
 import { ActionIcon, Button, Modal, Stack, TextInput } from '@mantine/core'
 import { TbPencil } from 'react-icons/tb'
 
-import { editUser } from '../../../../api/users/editUser'
+import { editAuthor } from '../../../../api/authors/editAuthor'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { TUser, TEditUser } from '../../../../types/user'
+import { TAuthor, TEditAuthor } from '../../../../types/author'
 
-export const UsersEditButtonWithForm = ({ user }: { user: TUser }) => {
+export const AuthorsEditButtonWithForm = ({ author }: { author: TAuthor }) => {
     const [opened, setOpened] = useState(false)
 
     const queryClient = useQueryClient()
 
     const { mutate } = useMutation({
-        mutationFn: editUser(user.id),
+        mutationFn: editAuthor(author.id),
         onSuccess: () => {
             setOpened(false)
-            queryClient.invalidateQueries({ queryKey: ['users'] })
+            queryClient.invalidateQueries({ queryKey: ['authors'] })
         },
     })
 
-    const { handleSubmit, register } = useForm<TEditUser>({
+    const { handleSubmit, register } = useForm<TEditAuthor>({
         defaultValues: {
-            name: user.name,
-            email: user.email,
+            name: author.name,
+            email: author.email,
         },
     })
-    const onSubmit: SubmitHandler<TEditUser> = (data) => {
+    const onSubmit: SubmitHandler<TEditAuthor> = (data) => {
         mutate(data)
     }
 
     return (
         <>
-            <ActionIcon onClick={() => setOpened(true)}>
+            <ActionIcon
+                variant="light"
+                size="sm"
+                onClick={() => setOpened(true)}
+            >
                 <TbPencil />
             </ActionIcon>
-
             <Modal
                 opened={opened}
                 onClose={() => setOpened(false)}
@@ -45,7 +48,6 @@ export const UsersEditButtonWithForm = ({ user }: { user: TUser }) => {
                     <Stack>
                         <TextInput label="Imię" {...register('name')} />
                         <TextInput label="Email" {...register('email')} />
-
                         <Button type="submit">Zapisz</Button>
                     </Stack>
                 </form>

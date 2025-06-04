@@ -2,43 +2,47 @@ import { Button, Modal, Stack, TextInput } from '@mantine/core'
 import { useState } from 'react'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { TbPlus } from 'react-icons/tb'
-import { addUser } from '../../../../api/users/addUser'
+import { addAuthor } from '../../../../api/authors/addAuthor'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { TAddUser } from '../../../../types/user'
+import { TAddAuthor } from '../../../../types/author'
 
-export const AddUserButtonWithModal = () => {
+export const AddAuthorButtonWithModal = () => {
     const queryClient = useQueryClient()
 
-    const [openUser, setOpenUser] = useState(false)
+    const [openAuthor, setOpenAuthor] = useState(false)
 
     const { mutate } = useMutation({
-        mutationFn: addUser,
+        mutationFn: addAuthor,
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['users'] })
-            setOpenUser(false)
+            queryClient.invalidateQueries({ queryKey: ['authors'] })
+            setOpenAuthor(false)
         },
     })
 
-    const { handleSubmit, register } = useForm<TAddUser>()
-    const onSubmit: SubmitHandler<TAddUser> = (data) => {
+    const { handleSubmit, register, reset } = useForm<TAddAuthor>()
+    const onSubmit: SubmitHandler<TAddAuthor> = (data) => {
         mutate(data)
+        reset()
     }
+
     return (
         <>
-            <Button leftSection={<TbPlus />} onClick={() => setOpenUser(true)}>
-                Dodaj Autora
+            <Button
+                onClick={() => setOpenAuthor(true)}
+                leftSection={<TbPlus size={16} />}
+            >
+                Dodaj autora
             </Button>
             <Modal
-                opened={openUser}
-                onClose={() => setOpenUser(false)}
+                opened={openAuthor}
+                onClose={() => setOpenAuthor(false)}
                 title="Dodaj autora"
             >
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <Stack>
                         <TextInput label="Imię" {...register('name')} />
                         <TextInput label="Email" {...register('email')} />
-
-                        <Button type="submit">Dodaj</Button>
+                        <Button type="submit">Zapisz</Button>
                     </Stack>
                 </form>
             </Modal>

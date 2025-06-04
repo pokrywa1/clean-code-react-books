@@ -1,14 +1,14 @@
 import { Group, Title, Card, Table } from '@mantine/core'
-import { useGetUsers } from '../../../../api/users/getUsers'
+import { useGetAuthors } from '../../../../api/authors/getAuthors'
 
-import { UserDeleteButtonWithModal } from './UserDeleteButtonWithModal'
-import { UsersEditButtonWithForm } from './UsersEditButtonWithForm'
-import { AddUserButtonWithModal } from './AddUserButtonWithModal'
+import { AuthorDeleteButtonWithModal } from './AuthorDeleteButtonWithModal'
+import { AuthorsEditButtonWithForm } from './AuthorsEditButtonWithForm'
+import { AddAuthorButtonWithModal } from './AddAuthorButtonWithModal'
 
-export const UsersDatatable = () => {
-    const { data: users } = useGetUsers()
+export const AuthorsDatatable = () => {
+    const { data: authors } = useGetAuthors()
 
-    if (!users) {
+    if (!authors) {
         return <div>Loading...</div>
     }
 
@@ -16,7 +16,7 @@ export const UsersDatatable = () => {
         <>
             <Group justify="space-between" mb={20}>
                 <Title order={2}>Autorzy</Title>
-                <AddUserButtonWithModal />
+                <AddAuthorButtonWithModal />
             </Group>
             <Card>
                 <Table>
@@ -28,15 +28,17 @@ export const UsersDatatable = () => {
                         </Table.Tr>
                     </Table.Thead>
                     <Table.Tbody>
-                        {users.map((user) => (
-                            <Table.Tr key={user.id}>
-                                <Table.Td>{user.name}</Table.Td>
-                                <Table.Td>{user.email}</Table.Td>
+                        {authors.map((author) => (
+                            <Table.Tr key={author.id}>
+                                <Table.Td>{author.name}</Table.Td>
+                                <Table.Td>{author.email}</Table.Td>
                                 <Table.Td>
                                     <Group justify="flex-end">
-                                        <UsersEditButtonWithForm user={user} />
-                                        <UserDeleteButtonWithModal
-                                            userId={user.id}
+                                        <AuthorsEditButtonWithForm
+                                            author={author}
+                                        />
+                                        <AuthorDeleteButtonWithModal
+                                            authorId={author.id}
                                         />
                                     </Group>
                                 </Table.Td>

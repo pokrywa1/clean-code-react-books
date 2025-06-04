@@ -10,10 +10,10 @@ import { useState, useEffect } from 'react'
 import { useForm, SubmitHandler, Controller } from 'react-hook-form'
 import { TbPencil } from 'react-icons/tb'
 import { editBook } from '../../../../api/books/editBook'
-import { getUsers } from '../../../../api/users/getUsers'
+import { getAuthors } from '../../../../api/authors/getAuthors'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { TBook, TEditBook } from '../../../../types/book'
-import { TUser } from '../../../../types/user'
+import { TAuthor } from '../../../../types/author'
 
 interface BooksEditButtonWithFormProps {
     book: TBook
@@ -23,26 +23,26 @@ export const BooksEditButtonWithForm = ({
     book,
 }: BooksEditButtonWithFormProps) => {
     const queryClient = useQueryClient()
-    const [users, setUsers] = useState<TUser[]>([])
+    const [authors, setAuthors] = useState<TAuthor[]>([])
     const [openEdit, setOpenEdit] = useState(false)
 
     useEffect(() => {
-        getUsers().then((data) => setUsers(data))
+        getAuthors().then((data) => setAuthors(data))
     }, [])
 
     const { mutate } = useMutation({
         mutationFn: editBook(book.id),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['books'] })
             setOpenEdit(false)
+            queryClient.invalidateQueries({ queryKey: ['books'] })
         },
     })
 
-    const { handleSubmit, register, control } = useForm<TEditBook>({
+    const { handleSubmit, control } = useForm<TEditBook>({
         defaultValues: {
             title: book.title,
             genre: book.genre,
-            authorId: book.authorId,
+            authorId: book.authorId.toString(),
         },
     })
 
@@ -50,16 +50,11 @@ export const BooksEditButtonWithForm = ({
         mutate(data)
     }
 
-    const usersData = users.map((user) => ({
-        value: user.id.toString(),
-        label: user.name,
-    }))
-
     return (
         <>
             <ActionIcon
-                color="blue"
                 variant="light"
+                size="sm"
                 onClick={() => setOpenEdit(true)}
             >
                 <TbPencil />
@@ -71,21 +66,34 @@ export const BooksEditButtonWithForm = ({
             >
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <Stack>
-                        <TextInput label="Tytuł" {...register('title')} />
-                        <TextInput label="Gatunek" {...register('genre')} />
+                        <Controller
+                            name="title"
+                            control={control}
+                            render={({ field }) => (
+                                <TextInput label="Tytuł" {...field} />
+                            )}
+                        />
+
+                        <Controller
+                            name="genre"
+                            control={control}
+                            render={({ field }) => (
+                                <TextInput label="Rodzaj" {...field} />
+                            )}
+                        />
                         <Controller
                             name="authorId"
                             control={control}
                             render={({ field }) => (
                                 <Select
                                     label="Autor"
-                                    data={usersData}
-                                    value={field.value?.toString()}
-                                    onChange={(value) =>
-                                        field.onChange(
-                                            value ? parseInt(value) : null
-                                        )
-                                    }
+                                    searchable
+                                    placeholder="Wybierz autora"
+                                    data={authors.map((author) => ({
+                                        value: author.id.toString(),
+                                        label: author.name,
+                                    }))}
+                                    {...field}
                                 />
                             )}
                         />

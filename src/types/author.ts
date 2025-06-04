@@ -1,17 +1,17 @@
 import { TBook } from './book'
 
-export interface TUser {
+export interface TAuthor {
     id: number
     name: string
     email: string
     books?: TBook[]
 }
 
-export interface TAddUser {
+export interface TAddAuthor {
     name: string
     email: string
 }
 
-export interface TEditUser extends TAddUser {
+export interface TEditAuthor extends TAddAuthor {
     id: number
 }

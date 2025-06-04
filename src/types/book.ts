@@ -1,11 +1,11 @@
-import { TUser } from './user'
+import { TAuthor } from './author'
 
 export interface TBook {
     id: string
     title: string
     genre: string
     authorId: string
-    author?: TUser
+    author?: TAuthor
 }
 
 export interface TAddBook {

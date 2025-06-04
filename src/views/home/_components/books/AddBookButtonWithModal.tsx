@@ -1,20 +1,20 @@
-import { Button, Modal, Stack, TextInput, Select } from '@mantine/core'
+import { Button, Modal, Select, Stack, TextInput } from '@mantine/core'
 import { useState, useEffect } from 'react'
-import { useForm, SubmitHandler, Controller } from 'react-hook-form'
+import { useForm, Controller, SubmitHandler } from 'react-hook-form'
 import { TbPlus } from 'react-icons/tb'
 import { addBook } from '../../../../api/books/addBook'
-import { getUsers } from '../../../../api/users/getUsers'
+import { getAuthors } from '../../../../api/authors/getAuthors'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { TAddBook } from '../../../../types/book'
-import { TUser } from '../../../../types/user'
+import { TAuthor } from '../../../../types/author'
 
 export const AddBookButtonWithModal = () => {
     const queryClient = useQueryClient()
-    const [users, setUsers] = useState<TUser[]>([])
+    const [authors, setAuthors] = useState<TAuthor[]>([])
     const [openBook, setOpenBook] = useState(false)
 
     useEffect(() => {
-        getUsers().then((data) => setUsers(data))
+        getAuthors().then((data) => setAuthors(data))
     }, [])
 
     const { mutate } = useMutation({
@@ -25,15 +25,22 @@ export const AddBookButtonWithModal = () => {
         },
     })
 
-    const { handleSubmit, register, control } = useForm<TAddBook>()
+    const { handleSubmit, control, reset } = useForm<TAddBook>()
     const onSubmit: SubmitHandler<TAddBook> = (data) => {
-        mutate(data)
+        mutate({
+            ...data,
+            authorId: data.authorId,
+        })
+        reset()
     }
 
     return (
         <>
-            <Button leftSection={<TbPlus />} onClick={() => setOpenBook(true)}>
-                Dodaj Książkę
+            <Button
+                onClick={() => setOpenBook(true)}
+                leftSection={<TbPlus size={16} />}
+            >
+                Dodaj książkę
             </Button>
             <Modal
                 opened={openBook}
@@ -42,23 +49,39 @@ export const AddBookButtonWithModal = () => {
             >
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <Stack>
-                        <TextInput label="Tytuł" {...register('title')} />
-                        <TextInput label="Gatunek" {...register('genre')} />
+                        <Controller
+                            name="title"
+                            control={control}
+                            render={({ field }) => (
+                                <TextInput label="Tytuł" {...field} />
+                            )}
+                        />
+
+                        <Controller
+                            name="genre"
+                            control={control}
+                            render={({ field }) => (
+                                <TextInput label="Rodzaj" {...field} />
+                            )}
+                        />
+
                         <Controller
                             name="authorId"
                             control={control}
                             render={({ field }) => (
                                 <Select
                                     label="Autor"
-                                    data={users.map((user) => ({
-                                        value: user.id.toString(),
-                                        label: user.name,
+                                    searchable
+                                    placeholder="Wybierz autora"
+                                    data={authors.map((author) => ({
+                                        value: author.id.toString(),
+                                        label: author.name,
                                     }))}
                                     {...field}
                                 />
                             )}
                         />
-                        <Button type="submit">Dodaj</Button>
+                        <Button type="submit">Zapisz</Button>
                     </Stack>
                 </form>
             </Modal>

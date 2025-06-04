@@ -2,17 +2,21 @@ import { ActionIcon, Button, Group, Modal, Stack } from '@mantine/core'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 import { TbTrash } from 'react-icons/tb'
-import { deleteUser } from '../../../../api/users/deleteUser'
+import { deleteAuthor } from '../../../../api/authors/deleteAuthor'
 
-export const UserDeleteButtonWithModal = ({ userId }: { userId: number }) => {
+export const AuthorDeleteButtonWithModal = ({
+    authorId,
+}: {
+    authorId: number
+}) => {
     const queryClient = useQueryClient()
     const [open, setOpen] = useState(false)
 
     const { mutate } = useMutation({
-        mutationFn: deleteUser,
+        mutationFn: deleteAuthor,
         onSuccess: () => {
             setOpen(false)
-            queryClient.invalidateQueries({ queryKey: ['users'] })
+            queryClient.invalidateQueries({ queryKey: ['authors'] })
         },
     })
 
@@ -28,10 +32,12 @@ export const UserDeleteButtonWithModal = ({ userId }: { userId: number }) => {
                 title="Usuń autora"
             >
                 <Stack>
-                    <p>Czy na pewno chcesz usunąć autora?</p>
+                    <p>Czy na pewno chcesz usunąć tego autora?</p>
                     <Group justify="flex-end">
-                        <Button onClick={() => setOpen(false)}>Anuluj</Button>
-                        <Button color="red" onClick={() => mutate(userId)}>
+                        <Button variant="light" onClick={() => setOpen(false)}>
+                            Anuluj
+                        </Button>
+                        <Button color="red" onClick={() => mutate(authorId)}>
                             Usuń
                         </Button>
                     </Group>
