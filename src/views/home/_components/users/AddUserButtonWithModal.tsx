@@ -2,8 +2,9 @@ import { Button, Modal, Stack, TextInput } from '@mantine/core'
 import { useState } from 'react'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { TbPlus } from 'react-icons/tb'
-import { addUser, TAddUser } from '../../../../api/users/addUser'
+import { addUser } from '../../../../api/users/addUser'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { TAddUser } from '../../../../types/user'
 
 export const AddUserButtonWithModal = () => {
     const queryClient = useQueryClient()

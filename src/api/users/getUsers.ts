@@ -1,13 +1,8 @@
 import { useQuery } from '@tanstack/react-query'
 import { api } from '../../lib/axios'
-import { TBook } from '../books/getBooks'
 
-export type TUser = {
-    id: number
-    name: string
-    email: string
-    books: TBook[]
-}
+import { TUser } from '../../types/user'
+
 export const getUsers = () => {
     return api.get<TUser[]>('/users').then((res) => res.data)
 }

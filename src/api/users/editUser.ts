@@ -1,10 +1,8 @@
 import z from 'zod'
 import { api } from '../../lib/axios'
-import { TUser } from './getUsers'
+import { TEditUser } from '../../types/user'
 
-export type TEditUser = Omit<TUser, 'books' | 'id'>
-
-export const editUserSchema: z.ZodSchema<TEditUser> = z.object({
+export const editUserSchema: z.ZodSchema<Omit<TEditUser, 'id'>> = z.object({
     name: z.string().min(1, 'Name is required'),
     email: z.string().email('Invalid email format').min(1, 'Email is required'),
 })

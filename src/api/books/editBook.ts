@@ -1,6 +1,6 @@
 import { api } from '../../lib/axios'
-import { TBook } from './getBooks'
+import { TEditBook } from '../../types/book'
 
-export const editBook = (id: string) => (data: TBook) => {
-    return api.put(`/books/${id}`, data).then((res) => res)
+export const editBook = (id: string) => (data: TEditBook) => {
+    return api.patch(`/books/${id}`, data).then((res) => res)
 }

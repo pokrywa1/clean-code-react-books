@@ -1,11 +1,11 @@
 import { useState } from 'react'
-import { TUser } from '../../../../api/users/getUsers'
 import { ActionIcon, Button, Modal, Stack, TextInput } from '@mantine/core'
 import { TbPencil } from 'react-icons/tb'
 
-import { editUser, TEditUser } from '../../../../api/users/editUser'
+import { editUser } from '../../../../api/users/editUser'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { TUser, TEditUser } from '../../../../types/user'
 
 export const UsersEditButtonWithForm = ({ user }: { user: TUser }) => {
     const [opened, setOpened] = useState(false)

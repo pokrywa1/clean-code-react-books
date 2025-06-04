@@ -1,5 +1,10 @@
 import { api } from '../../lib/axios'
-import { TBook } from './getBooks'
+import { TAddBook, TBook } from '../../types/book'
 
-export const addBook = (book: TBook) =>
-    api.post('books', book).then((res) => res)
+export const addBook = (book: TAddBook): Promise<TBook> =>
+    api
+        .post('/books', {
+            ...book,
+            authorId: Number(book.authorId),
+        })
+        .then((res) => res.data)
