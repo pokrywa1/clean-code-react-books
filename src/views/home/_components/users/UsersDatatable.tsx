@@ -1,98 +1,22 @@
-import {
-    Group,
-    Title,
-    Button,
-    Card,
-    Table,
-    ActionIcon,
-    Modal,
-    Stack,
-    TextInput,
-} from '@mantine/core'
-import { useState, useEffect } from 'react'
-import { TbPlus, TbTrash, TbPencil } from 'react-icons/tb'
-import { addUser } from '../../../../api/users/addUser'
-import { deleteUser } from '../../../../api/users/deleteUser'
-import { editUser } from '../../../../api/users/editUser'
-import { getUsers } from '../../../../api/users/getUsers'
+import { Group, Title, Card, Table } from '@mantine/core'
+import { useGetUsers } from '../../../../api/users/getUsers'
+
+import { UserDeleteButtonWithModal } from './UserDeleteButtonWithModal'
+import { UsersEditButtonWithForm } from './UsersEditButtonWithForm'
+import { AddUserButtonWithModal } from './AddUserButtonWithModal'
 
 export const UsersDatatable = () => {
-    const [users, setUsers] = useState([])
+    const { data: users } = useGetUsers()
 
-    const [openUser, setOpenUser] = useState(false)
-    const [deleteUserOpen, setDeleteUserOpen] = useState(false)
-    const [editUserOpen, setEditUserOpen] = useState(false)
-    const [userToDelete, setUserToDelete] = useState(null)
-    const [userToEdit, setUserToEdit] = useState(null)
-
-    const [name, setName] = useState('')
-    const [email, setEmail] = useState('')
-
-    const [loading, setLoading] = useState(false)
-    const [error, setError] = useState('')
-
-    useEffect(() => {
-        getUsers().then((data) => setUsers(data))
-    }, [])
-
-    const handleAddUser = () => {
-        setLoading(true)
-        setError('')
-        addUser({ email, name })
-            .then((data) => {
-                setUsers((prev) => [...prev, data])
-                setOpenUser(false)
-                setName('')
-                setEmail('')
-            })
-            .catch((err) => setError(err.message))
-            .finally(() => setLoading(false))
+    if (!users) {
+        return <div>Loading...</div>
     }
 
-    const handleEditUser = (user) => {
-        setUserToEdit(user)
-        setName(user.name)
-        setEmail(user.email)
-        setEditUserOpen(true)
-    }
-
-    const confirmEditUser = () => {
-        setLoading(true)
-        setError('')
-        editUser(userToEdit.id, { name, email })
-            .then((data) => {
-                setUsers((prev) =>
-                    prev.map((u) => (u.id === data.id ? data : u))
-                )
-                setEditUserOpen(false)
-                setName('')
-                setEmail('')
-            })
-            .catch((err) => setError(err.message))
-            .finally(() => setLoading(false))
-    }
-
-    const handleDeleteUser = (user) => {
-        setUserToDelete(user)
-        setDeleteUserOpen(true)
-    }
-
-    const confirmDeleteUser = () => {
-        deleteUser(userToDelete.id).then(() => {
-            setUsers((prev) => prev.filter((u) => u.id !== userToDelete.id))
-            setDeleteUserOpen(false)
-        })
-    }
     return (
         <>
             <Group justify="space-between" mb={20}>
                 <Title order={2}>Autorzy</Title>
-                <Button
-                    leftSection={<TbPlus />}
-                    onClick={() => setOpenUser(true)}
-                >
-                    Dodaj Autora
-                </Button>
+                <AddUserButtonWithModal />
             </Group>
             <Card>
                 <Table>
@@ -110,19 +34,10 @@ export const UsersDatatable = () => {
                                 <Table.Td>{user.email}</Table.Td>
                                 <Table.Td>
                                     <Group justify="flex-end">
-                                        <ActionIcon
-                                            color="red"
-                                            onClick={() =>
-                                                handleDeleteUser(user)
-                                            }
-                                        >
-                                            <TbTrash />
-                                        </ActionIcon>
-                                        <ActionIcon
-                                            onClick={() => handleEditUser(user)}
-                                        >
-                                            <TbPencil />
-                                        </ActionIcon>
+                                        <UsersEditButtonWithForm user={user} />
+                                        <UserDeleteButtonWithModal
+                                            userId={user.id}
+                                        />
                                     </Group>
                                 </Table.Td>
                             </Table.Tr>
@@ -130,70 +45,6 @@ export const UsersDatatable = () => {
                     </Table.Tbody>
                 </Table>
             </Card>
-
-            <Modal
-                opened={openUser}
-                onClose={() => setOpenUser(false)}
-                title="Dodaj autora"
-            >
-                <Stack>
-                    <TextInput
-                        label="Imię"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                    />
-                    <TextInput
-                        label="Email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                    />
-                    {error && <p style={{ color: 'red' }}>{error}</p>}
-                    <Button onClick={handleAddUser} loading={loading}>
-                        Dodaj
-                    </Button>
-                </Stack>
-            </Modal>
-
-            <Modal
-                opened={editUserOpen}
-                onClose={() => setEditUserOpen(false)}
-                title="Edytuj autora"
-            >
-                <Stack>
-                    <TextInput
-                        label="Imię"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                    />
-                    <TextInput
-                        label="Email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                    />
-                    {error && <p style={{ color: 'red' }}>{error}</p>}
-                    <Button onClick={confirmEditUser} loading={loading}>
-                        Zapisz
-                    </Button>
-                </Stack>
-            </Modal>
-
-            <Modal
-                opened={deleteUserOpen}
-                onClose={() => setDeleteUserOpen(false)}
-                title="Usuń autora"
-            >
-                <Stack>
-                    <p>Czy na pewno chcesz usunąć autora?</p>
-                    <Group justify="flex-end">
-                        <Button onClick={() => setDeleteUserOpen(false)}>
-                            Anuluj
-                        </Button>
-                        <Button color="red" onClick={confirmDeleteUser}>
-                            Usuń
-                        </Button>
-                    </Group>
-                </Stack>
-            </Modal>
         </>
     )
 }

@@ -1,5 +1,5 @@
-export const deleteUser = (id) => {
-    return fetch(`http://localhost:8080/users/${id}`, {
-        method: 'DELETE',
-    })
+import { api } from '../../lib/axios'
+
+export const deleteUser = (id: number) => {
+    return api.delete(`/users/${id}`)
 }

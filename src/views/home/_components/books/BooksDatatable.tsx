@@ -12,7 +12,7 @@ import {
 } from '@mantine/core'
 import { useState, useEffect } from 'react'
 import { TbPlus, TbTrash, TbPencil } from 'react-icons/tb'
-import { getBooks } from '../../../../api/books/getBooks'
+import { getBooks, useGetBooks } from '../../../../api/books/getBooks'
 import { addBook } from '../../../../api/books/addBook'
 import { deleteBook } from '../../../../api/books/deleteBook'
 import { editBook } from '../../../../api/books/editBook'
@@ -21,9 +21,6 @@ import { getUsers } from '../../../../api/users/getUsers'
 export const BooksDatatable = () => {
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
-
-    const [books, setBooks] = useState([])
-    const [users, setUsers] = useState([])
 
     const [bookToEdit, setBookToEdit] = useState(null)
 
@@ -36,17 +33,25 @@ export const BooksDatatable = () => {
     const [editBookOpen, setEditBookOpen] = useState(false)
     const [bookToDelete, setBookToDelete] = useState(null)
 
+    const [users, setUsers] = useState([])
+
+    const {
+        data: books,
+        refetch: refetchBooks,
+        isLoading: isBookLoading,
+    } = useGetBooks()
+
     useEffect(() => {
-        getBooks().then((data) => setBooks(data))
         getUsers().then((data) => setUsers(data))
     }, [])
 
     const handleAddBook = () => {
         setLoading(true)
         setError('')
-        addBook({ title, genre, author_id: authorId })
+        addBook({ title, genre, authorId: authorId })
             .then((data) => {
-                setBooks((prev) => [...prev, data])
+                // setBooks((prev) => [...prev, data])
+                refetchBooks()
                 setOpenBook(false)
                 setTitle('')
                 setGenre('')
@@ -91,6 +96,10 @@ export const BooksDatatable = () => {
             setBooks((prev) => prev.filter((b) => b.id !== bookToDelete.id))
             setDeleteBookOpen(false)
         })
+    }
+
+    if (!books || !users) {
+        return <div>Loading...</div>
     }
 
     return (

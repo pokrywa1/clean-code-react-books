@@ -1,6 +1,5 @@
-export const addBook = (book) =>
-    fetch('http://localhost:8080/books', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(book),
-    }).then((res) => res.json())
+import { api } from '../../lib/axios'
+import { TBook } from './getBooks'
+
+export const addBook = (book: TBook) =>
+    api.post('books', book).then((res) => res)
