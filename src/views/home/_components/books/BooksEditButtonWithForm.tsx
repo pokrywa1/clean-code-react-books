@@ -6,14 +6,18 @@ import {
     TextInput,
     Select,
 } from '@mantine/core'
-import { useState, useEffect } from 'react'
-import { useForm, SubmitHandler, Controller } from 'react-hook-form'
+import { useState } from 'react'
+import {
+    useForm,
+    SubmitHandler,
+    Controller,
+    useFormContext,
+} from 'react-hook-form'
 import { TbPencil } from 'react-icons/tb'
 import { editBook } from '../../../../api/books/editBook'
-import { getAuthors } from '../../../../api/authors/getAuthors'
+import { useGetAuthors } from '../../../../api/authors/getAuthors'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { TBook, TEditBook } from '../../../../types/book'
-import { TAuthor } from '../../../../types/author'
 
 interface BooksEditButtonWithFormProps {
     book: TBook
@@ -23,12 +27,7 @@ export const BooksEditButtonWithForm = ({
     book,
 }: BooksEditButtonWithFormProps) => {
     const queryClient = useQueryClient()
-    const [authors, setAuthors] = useState<TAuthor[]>([])
     const [openEdit, setOpenEdit] = useState(false)
-
-    useEffect(() => {
-        getAuthors().then((data) => setAuthors(data))
-    }, [])
 
     const { mutate } = useMutation({
         mutationFn: editBook(book.id),
@@ -38,7 +37,7 @@ export const BooksEditButtonWithForm = ({
         },
     })
 
-    const { handleSubmit, control } = useForm<TEditBook>({
+    const { handleSubmit } = useForm<TEditBook>({
         defaultValues: {
             title: book.title,
             genre: book.genre,
@@ -65,42 +64,46 @@ export const BooksEditButtonWithForm = ({
                 title="Edytuj książkę"
             >
                 <form onSubmit={handleSubmit(onSubmit)}>
-                    <Stack>
-                        <Controller
-                            name="title"
-                            control={control}
-                            render={({ field }) => (
-                                <TextInput label="Tytuł" {...field} />
-                            )}
-                        />
-
-                        <Controller
-                            name="genre"
-                            control={control}
-                            render={({ field }) => (
-                                <TextInput label="Rodzaj" {...field} />
-                            )}
-                        />
-                        <Controller
-                            name="authorId"
-                            control={control}
-                            render={({ field }) => (
-                                <Select
-                                    label="Autor"
-                                    searchable
-                                    placeholder="Wybierz autora"
-                                    data={authors.map((author) => ({
-                                        value: author.id.toString(),
-                                        label: author.name,
-                                    }))}
-                                    {...field}
-                                />
-                            )}
-                        />
-                        <Button type="submit">Zapisz</Button>
-                    </Stack>
+                    <BooksEditFormFields />
                 </form>
             </Modal>
         </>
+    )
+}
+
+const BooksEditFormFields = () => {
+    const { data: authors } = useGetAuthors()
+    const { control } = useFormContext()
+    return (
+        <Stack>
+            <Controller
+                name="title"
+                control={control}
+                render={({ field }) => <TextInput label="Tytuł" {...field} />}
+            />
+
+            <Controller
+                name="genre"
+                control={control}
+                render={({ field }) => <TextInput label="Rodzaj" {...field} />}
+            />
+            <Controller
+                name="authorId"
+                control={control}
+                render={({ field }) => (
+                    <Select
+                        label="Autor"
+                        searchable
+                        placeholder="Wybierz autora"
+                        data={authors?.map((author) => ({
+                            value: author.id.toString(),
+                            label: author.name,
+                        }))}
+                        {...field}
+                    />
+                )}
+            />
+            <Button type="submit">Zapisz</Button>
+        </Stack>
     )
 }

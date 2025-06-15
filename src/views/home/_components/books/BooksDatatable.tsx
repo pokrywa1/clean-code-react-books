@@ -1,8 +1,7 @@
 import { Group, Title, Card, Table } from '@mantine/core'
 import { useGetBooks } from '../../../../api/books/getBooks'
 import { AddBookButtonWithModal } from './AddBookButtonWithModal'
-import { BookDeleteButtonWithModal } from './BookDeleteButtonWithModal'
-import { BooksEditButtonWithForm } from './BooksEditButtonWithForm'
+import { BookTableRow } from './BookTableRow'
 import { TBook } from '../../../../types/book'
 
 export const BooksDatatable = () => {
@@ -23,26 +22,14 @@ export const BooksDatatable = () => {
                     <Table.Thead>
                         <Table.Tr>
                             <Table.Th>Tytuł</Table.Th>
-                            <Table.Th>Gatunek</Table.Th>
+                            <Table.Th>Rodzaj</Table.Th>
                             <Table.Th>Autor</Table.Th>
                             <Table.Th></Table.Th>
                         </Table.Tr>
                     </Table.Thead>
                     <Table.Tbody>
                         {books.map((book: TBook) => (
-                            <Table.Tr key={book.id}>
-                                <Table.Td>{book.title}</Table.Td>
-                                <Table.Td>{book.genre}</Table.Td>
-                                <Table.Td>{book.author?.name}</Table.Td>
-                                <Table.Td>
-                                    <Group justify="flex-end">
-                                        <BooksEditButtonWithForm book={book} />
-                                        <BookDeleteButtonWithModal
-                                            bookId={book.id}
-                                        />
-                                    </Group>
-                                </Table.Td>
-                            </Table.Tr>
+                            <BookTableRow key={book.id} book={book} />
                         ))}
                     </Table.Tbody>
                 </Table>

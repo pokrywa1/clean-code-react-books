@@ -1,9 +1,7 @@
 import { Group, Title, Card, Table } from '@mantine/core'
 import { useGetAuthors } from '../../../../api/authors/getAuthors'
-
-import { AuthorDeleteButtonWithModal } from './AuthorDeleteButtonWithModal'
-import { AuthorsEditButtonWithForm } from './AuthorsEditButtonWithForm'
 import { AddAuthorButtonWithModal } from './AddAuthorButtonWithModal'
+import { AuthorTableRow } from './AuthorTableRow'
 
 export const AuthorsDatatable = () => {
     const { data: authors } = useGetAuthors()
@@ -29,20 +27,7 @@ export const AuthorsDatatable = () => {
                     </Table.Thead>
                     <Table.Tbody>
                         {authors.map((author) => (
-                            <Table.Tr key={author.id}>
-                                <Table.Td>{author.name}</Table.Td>
-                                <Table.Td>{author.email}</Table.Td>
-                                <Table.Td>
-                                    <Group justify="flex-end">
-                                        <AuthorsEditButtonWithForm
-                                            author={author}
-                                        />
-                                        <AuthorDeleteButtonWithModal
-                                            authorId={author.id}
-                                        />
-                                    </Group>
-                                </Table.Td>
-                            </Table.Tr>
+                            <AuthorTableRow key={author.id} author={author} />
                         ))}
                     </Table.Tbody>
                 </Table>
