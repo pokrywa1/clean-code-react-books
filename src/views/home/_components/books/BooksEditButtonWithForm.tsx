@@ -1,23 +1,13 @@
-import {
-    ActionIcon,
-    Button,
-    Modal,
-    Stack,
-    TextInput,
-    Select,
-} from '@mantine/core'
+import { ActionIcon, Button, Modal, Stack } from '@mantine/core'
 import { useState } from 'react'
-import {
-    useForm,
-    SubmitHandler,
-    Controller,
-    useFormContext,
-} from 'react-hook-form'
+import { useForm, SubmitHandler, FormProvider } from 'react-hook-form'
 import { TbPencil } from 'react-icons/tb'
 import { editBook } from '../../../../api/books/editBook'
 import { useGetAuthors } from '../../../../api/authors/getAuthors'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { TBook, TEditBook } from '../../../../types/book'
+import { InputSelectRHF } from '../../../../app/components/inputs/InputSelect'
+import { InputTextRHF } from '../../../../app/components/inputs/InputText'
 
 interface BooksEditButtonWithFormProps {
     book: TBook
@@ -37,13 +27,15 @@ export const BooksEditButtonWithForm = ({
         },
     })
 
-    const { handleSubmit } = useForm<TEditBook>({
+    const methods = useForm<TEditBook>({
         defaultValues: {
             title: book.title,
             genre: book.genre,
             authorId: book.authorId.toString(),
         },
     })
+
+    const { handleSubmit } = methods
 
     const onSubmit: SubmitHandler<TEditBook> = (data) => {
         mutate(data)
@@ -63,45 +55,32 @@ export const BooksEditButtonWithForm = ({
                 onClose={() => setOpenEdit(false)}
                 title="Edytuj książkę"
             >
-                <form onSubmit={handleSubmit(onSubmit)}>
-                    <BooksEditFormFields />
-                </form>
+                <FormProvider {...methods}>
+                    <form onSubmit={handleSubmit(onSubmit)}>
+                        <BooksEditFormFields />
+                    </form>
+                </FormProvider>
             </Modal>
         </>
     )
 }
 
-const BooksEditFormFields = () => {
+export const BooksEditFormFields = () => {
     const { data: authors } = useGetAuthors()
-    const { control } = useFormContext()
+
     return (
         <Stack>
-            <Controller
-                name="title"
-                control={control}
-                render={({ field }) => <TextInput label="Tytuł" {...field} />}
-            />
-
-            <Controller
-                name="genre"
-                control={control}
-                render={({ field }) => <TextInput label="Rodzaj" {...field} />}
-            />
-            <Controller
+            <InputTextRHF label="Tytuł" name="title" />
+            <InputTextRHF label="Gatunek" name="genre" />
+            <InputSelectRHF
                 name="authorId"
-                control={control}
-                render={({ field }) => (
-                    <Select
-                        label="Autor"
-                        searchable
-                        placeholder="Wybierz autora"
-                        data={authors?.map((author) => ({
-                            value: author.id.toString(),
-                            label: author.name,
-                        }))}
-                        {...field}
-                    />
-                )}
+                label="Autor"
+                data={
+                    authors?.map((author) => ({
+                        value: author.id.toString(),
+                        label: author.name,
+                    })) || []
+                }
             />
             <Button type="submit">Zapisz</Button>
         </Stack>
