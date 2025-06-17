@@ -1,15 +1,27 @@
 import { useQuery } from '@tanstack/react-query'
 import { api } from '../../lib/axios'
-
 import { TAuthor } from '../../types/author'
+import { PaginatedResponse } from '../../types/pagination'
 
-export const getAuthors = () => {
-    return api.get<TAuthor[]>('/authors').then((res) => res.data)
+export interface GetAuthorsParams {
+    page?: number
+    limit?: number
 }
 
-export const useGetAuthors = () => {
+export const getAuthors = (params: GetAuthorsParams = {}) => {
+    return api
+        .get<PaginatedResponse<TAuthor>>('/authors', {
+            params: {
+                page: params.page ?? 1,
+                limit: params.limit ?? 10,
+            },
+        })
+        .then((res) => res.data)
+}
+
+export const useGetAuthors = (params: GetAuthorsParams = {}) => {
     return useQuery({
-        queryKey: ['authors'],
-        queryFn: getAuthors,
+        queryKey: ['authors', params],
+        queryFn: () => getAuthors(params),
     })
 }

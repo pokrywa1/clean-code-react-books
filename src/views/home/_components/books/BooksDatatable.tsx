@@ -1,39 +1,44 @@
-import { Group, Title, Card, Table } from '@mantine/core'
+import { Group, Title, Card, Table, Stack } from '@mantine/core'
 import { useGetBooks } from '../../../../api/books/getBooks'
 import { AddBookButtonWithModal } from './AddBookButtonWithModal'
 import { BookTableRow } from './BookTableRow'
-import { TBook } from '../../../../types/book'
+import { useState } from 'react'
+import { PaginatedQuery } from '../../../../app/components/PaginatedQuery'
 
 export const BooksDatatable = () => {
-    const { data: books } = useGetBooks()
-
-    if (!books) {
-        return <div>Loading...</div>
-    }
+    const [page, setPage] = useState(1)
+    const booksQuery = useGetBooks({ page, limit: 10 })
 
     return (
-        <>
-            <Group justify="space-between" mb={20}>
+        <Stack gap="md">
+            <Group justify="space-between">
                 <Title order={2}>Książki</Title>
                 <AddBookButtonWithModal />
             </Group>
             <Card>
-                <Table>
-                    <Table.Thead>
-                        <Table.Tr>
-                            <Table.Th>Tytuł</Table.Th>
-                            <Table.Th>Rodzaj</Table.Th>
-                            <Table.Th>Autor</Table.Th>
-                            <Table.Th></Table.Th>
-                        </Table.Tr>
-                    </Table.Thead>
-                    <Table.Tbody>
-                        {books.map((book: TBook) => (
-                            <BookTableRow key={book.id} book={book} />
-                        ))}
-                    </Table.Tbody>
-                </Table>
+                <PaginatedQuery
+                    query={booksQuery}
+                    currentPage={page}
+                    onPageChange={setPage}
+                    render={(books) => (
+                        <Table>
+                            <Table.Thead>
+                                <Table.Tr>
+                                    <Table.Th>Tytuł</Table.Th>
+                                    <Table.Th>Rodzaj</Table.Th>
+                                    <Table.Th>Autor</Table.Th>
+                                    <Table.Th></Table.Th>
+                                </Table.Tr>
+                            </Table.Thead>
+                            <Table.Tbody>
+                                {books.map((book) => (
+                                    <BookTableRow key={book.id} book={book} />
+                                ))}
+                            </Table.Tbody>
+                        </Table>
+                    )}
+                />
             </Card>
-        </>
+        </Stack>
     )
 }
