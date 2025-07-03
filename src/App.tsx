@@ -305,7 +305,9 @@ export default function App() {
                         <Stack w={'100%'} spacing="xl">
                             <Card withBorder>
                                 <Group justify="space-between" mb="md">
-                                    <Title order={1}>Autorzy</Title>
+                                    <Title order={1}>
+                                        Autorzy ({users.length})
+                                    </Title>
                                     <Button
                                         leftSection={<TbPlus />}
                                         onClick={() => setOpen(true)}
@@ -366,7 +368,9 @@ export default function App() {
 
                             <Card w={'100%'} withBorder>
                                 <Group justify="space-between" mb="md">
-                                    <Title order={1}>Książki</Title>
+                                    <Title order={1}>
+                                        Książki ({books.length})
+                                    </Title>
                                     <Button
                                         leftSection={<TbPlus />}
                                         onClick={() => setBookOpen(true)}
