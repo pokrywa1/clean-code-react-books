@@ -76,7 +76,7 @@ export const BooksEditFormFields = () => {
                 name="authorId"
                 label="Autor"
                 data={
-                    authors?.map((author) => ({
+                    authors?.items.map((author) => ({
                         value: author.id.toString(),
                         label: author.name,
                     })) || []

@@ -8,15 +8,14 @@ export interface GetAuthorsParams {
     limit?: number
 }
 
-export const getAuthors = (params: GetAuthorsParams = {}) => {
-    return api
-        .get<PaginatedResponse<TAuthor>>('/authors', {
-            params: {
-                page: params.page ?? 1,
-                limit: params.limit ?? 10,
-            },
-        })
-        .then((res) => res.data)
+export const getAuthors = async (params: GetAuthorsParams = {}) => {
+    const response = await api.get<PaginatedResponse<TAuthor>>('/authors', {
+        params: {
+            page: params.page ?? 1,
+            limit: params.limit ?? 10,
+        },
+    })
+    return response.data
 }
 
 export const useGetAuthors = (params: GetAuthorsParams = {}) => {
