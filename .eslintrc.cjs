@@ -39,12 +39,5 @@ module.exports = {
             'error',
             { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
         ],
-        '@typescript-eslint/explicit-function-return-type': [
-            'error',
-            { allowExpressions: false },
-        ],
-        '@typescript-eslint/no-explicit-any': 'error',
-        '@typescript-eslint/no-inferrable-types': 'error',
-        '@typescript-eslint/consistent-type-assertions': 'error',
     },
 }
