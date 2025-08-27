@@ -14,6 +14,4 @@ export interface TAddBook {
     authorId: number
 }
 
-export interface TEditBook extends TAddBook {
-    id: number
-}
+export interface TEditBook extends TAddBook {}

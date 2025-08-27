@@ -4,7 +4,6 @@ import { AddAuthorButtonWithModal } from './AddAuthorButtonWithModal'
 import { AuthorTableRow } from './AuthorTableRow'
 import { useState } from 'react'
 import { PaginatedQuery } from '../../../../app/components/PaginatedQuery'
-import { TAuthor } from '../../../../types/author'
 
 export const AuthorsDatatable = () => {
     const [page, setPage] = useState(1)
@@ -17,7 +16,7 @@ export const AuthorsDatatable = () => {
                 <AddAuthorButtonWithModal />
             </Group>
             <Card>
-                <PaginatedQuery<TAuthor>
+                <PaginatedQuery
                     query={authorsQuery}
                     currentPage={page}
                     onPageChange={setPage}

@@ -2,11 +2,16 @@ import { useState } from 'react'
 import { ActionIcon, Button, Modal, Stack, TextInput } from '@mantine/core'
 import { TbPencil } from 'react-icons/tb'
 
-import { editAuthor } from '../../../../api/authors/editAuthor'
-import { useForm, SubmitHandler } from 'react-hook-form'
+import {
+    editAuthor,
+    editAuthorSchema,
+} from '../../../../api/authors/editAuthor'
+import { useForm, SubmitHandler, FormProvider } from 'react-hook-form'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { TAuthor, TEditAuthor } from '../../../../types/author'
 import { notifyApiMessage } from '../../../../lib/utils/errors'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { InputTextRHF } from '../../../../app/components/inputs/InputText'
 
 export const AuthorsEditButtonWithForm = ({ author }: { author: TAuthor }) => {
     const [opened, setOpened] = useState(false)
@@ -25,18 +30,19 @@ export const AuthorsEditButtonWithForm = ({ author }: { author: TAuthor }) => {
         },
     })
 
-    const { handleSubmit, register } = useForm<TEditAuthor>({
+    const methods = useForm<TEditAuthor>({
         defaultValues: {
             name: author.name,
             email: author.email,
         },
+        resolver: zodResolver(editAuthorSchema),
     })
     const onSubmit: SubmitHandler<TEditAuthor> = (data) => {
         mutate(data)
     }
 
     return (
-        <>
+        <FormProvider {...methods}>
             <ActionIcon
                 variant="light"
                 size="sm"
@@ -49,14 +55,14 @@ export const AuthorsEditButtonWithForm = ({ author }: { author: TAuthor }) => {
                 onClose={() => setOpened(false)}
                 title="Edytuj autora"
             >
-                <form onSubmit={handleSubmit(onSubmit)}>
+                <form onSubmit={methods.handleSubmit(onSubmit)}>
                     <Stack>
-                        <TextInput label="Imię" {...register('name')} />
-                        <TextInput label="Email" {...register('email')} />
+                        <InputTextRHF label="Imię" name="name" />
+                        <InputTextRHF label="Email" name="email" />
                         <Button type="submit">Zapisz</Button>
                     </Stack>
                 </form>
             </Modal>
-        </>
+        </FormProvider>
     )
 }

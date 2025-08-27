@@ -17,12 +17,13 @@ export const InputTextRHF = ({ name, ...props }: InputTextPropsRHF) => {
         <Controller
             name={name}
             control={control}
-            render={({ field }) => {
+            render={({ field, fieldState: { error } }) => {
                 const { onChange, value } = field
                 return (
                     <TextInput
                         onChange={(e) => onChange(e.currentTarget.value)}
                         value={value || ''}
+                        error={error?.message}
                         {...props}
                     />
                 )

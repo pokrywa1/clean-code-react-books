@@ -2,13 +2,15 @@ import { ActionIcon, Button, Modal, Stack } from '@mantine/core'
 import { useState } from 'react'
 import { useForm, SubmitHandler, FormProvider } from 'react-hook-form'
 import { TbPencil } from 'react-icons/tb'
-import { editBook } from '../../../../api/books/editBook'
+import { editBook, editBookSchema } from '../../../../api/books/editBook'
 import { useGetAuthors } from '../../../../api/authors/getAuthors'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { TBook, TEditBook } from '../../../../types/book'
 import { InputSelectRHF } from '../../../../app/components/inputs/InputSelect'
 import { InputTextRHF } from '../../../../app/components/inputs/InputText'
 import { notifyApiMessage } from '../../../../lib/utils/errors'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { addBookSchema } from '../../../../api/books/addBook'
 
 interface BooksEditButtonWithFormProps {
     book: TBook
@@ -38,6 +40,7 @@ export const BooksEditButtonWithForm = ({
             genre: book.genre,
             authorId: book.authorId,
         },
+        resolver: zodResolver(editBookSchema),
     })
 
     const { handleSubmit } = methods

@@ -18,12 +18,18 @@ export const InputSelectRHF = ({ name, ...props }: InputSelectPropsRHF) => {
         <Controller
             name={name}
             control={control}
-            render={({ field }) => {
+            render={({ field, fieldState: { error } }) => {
                 const { onChange, value } = field
+
+                const onSelect = (val: string | null) => {
+                    onChange(Number(val))
+                }
+
                 return (
                     <Select
-                        onChange={onChange}
-                        value={value || null}
+                        onChange={onSelect}
+                        value={value ? value.toString() : undefined}
+                        error={error?.message}
                         {...props}
                     />
                 )

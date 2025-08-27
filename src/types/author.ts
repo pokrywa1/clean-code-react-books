@@ -12,6 +12,4 @@ export interface TAddAuthor {
     email: string
 }
 
-export interface TEditAuthor extends TAddAuthor {
-    id: number
-}
+export interface TEditAuthor extends TAddAuthor {}

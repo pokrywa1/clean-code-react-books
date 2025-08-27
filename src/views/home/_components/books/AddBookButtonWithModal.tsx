@@ -2,11 +2,12 @@ import { Button, Modal } from '@mantine/core'
 import { useState } from 'react'
 import { useForm, SubmitHandler, FormProvider } from 'react-hook-form'
 import { TbPlus } from 'react-icons/tb'
-import { addBook } from '../../../../api/books/addBook'
+import { addBook, addBookSchema } from '../../../../api/books/addBook'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { TAddBook } from '../../../../types/book'
 import { BooksEditFormFields } from './BooksEditButtonWithForm'
 import { notifyApiMessage } from '../../../../lib/utils/errors'
+import { zodResolver } from '@hookform/resolvers/zod'
 
 export const AddBookButtonWithModal = () => {
     const queryClient = useQueryClient()
@@ -24,7 +25,9 @@ export const AddBookButtonWithModal = () => {
         },
     })
 
-    const methods = useForm<TAddBook>()
+    const methods = useForm<TAddBook>({
+        resolver: zodResolver(addBookSchema),
+    })
     const onSubmit: SubmitHandler<TAddBook> = (data) => {
         mutate({
             ...data,

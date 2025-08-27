@@ -2,18 +2,19 @@ import { Button, Modal, Stack } from '@mantine/core'
 import { useState } from 'react'
 import { useForm, SubmitHandler, FormProvider } from 'react-hook-form'
 import { TbPlus } from 'react-icons/tb'
-import { addAuthor } from '../../../../api/authors/addAuthor'
+import { addAuthor, addAuthorSchema } from '../../../../api/authors/addAuthor'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { TAddAuthor } from '../../../../types/author'
 import { InputTextRHF } from '../../../../app/components/inputs/InputText'
 import { notifyApiMessage } from '../../../../lib/utils/errors'
+import { zodResolver } from '@hookform/resolvers/zod'
 
 export const AddAuthorButtonWithModal = () => {
     const queryClient = useQueryClient()
 
     const [openAuthor, setOpenAuthor] = useState(false)
 
-    const { mutate } = useMutation({
+    const { mutate, isPending } = useMutation({
         mutationFn: addAuthor,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['authors'] })
@@ -26,7 +27,9 @@ export const AddAuthorButtonWithModal = () => {
         },
     })
 
-    const methods = useForm<TAddAuthor>()
+    const methods = useForm<TAddAuthor>({
+        resolver: zodResolver(addAuthorSchema),
+    })
     const onSubmit: SubmitHandler<TAddAuthor> = (data) => {
         mutate(data)
     }
@@ -48,7 +51,9 @@ export const AddAuthorButtonWithModal = () => {
                     <Stack>
                         <InputTextRHF label="Imię" name="name" />
                         <InputTextRHF label="Email" name="email" />
-                        <Button type="submit">Zapisz</Button>
+                        <Button loading={isPending} type="submit">
+                            Zapisz
+                        </Button>
                     </Stack>
                 </form>
             </Modal>
