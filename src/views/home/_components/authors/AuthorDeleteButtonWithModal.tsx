@@ -13,7 +13,7 @@ export const AuthorDeleteButtonWithModal = ({
     const queryClient = useQueryClient()
     const [open, setOpen] = useState(false)
 
-    const { mutate } = useMutation({
+    const { mutate, isPending } = useMutation({
         mutationFn: deleteAuthor,
         onSuccess: () => {
             setOpen(false)
@@ -39,10 +39,18 @@ export const AuthorDeleteButtonWithModal = ({
                 <Stack>
                     <p>Czy na pewno chcesz usunąć tego autora?</p>
                     <Group justify="flex-end">
-                        <Button variant="light" onClick={() => setOpen(false)}>
+                        <Button
+                            variant="light"
+                            onClick={() => setOpen(false)}
+                            loading={isPending}
+                        >
                             Anuluj
                         </Button>
-                        <Button color="red" onClick={() => mutate(authorId)}>
+                        <Button
+                            color="red"
+                            onClick={() => mutate(authorId)}
+                            loading={isPending}
+                        >
                             Usuń
                         </Button>
                     </Group>

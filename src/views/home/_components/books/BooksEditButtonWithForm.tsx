@@ -10,7 +10,6 @@ import { InputSelectRHF } from '../../../../app/components/inputs/InputSelect'
 import { InputTextRHF } from '../../../../app/components/inputs/InputText'
 import { notifyApiMessage } from '../../../../lib/utils/errors'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { addBookSchema } from '../../../../api/books/addBook'
 
 interface BooksEditButtonWithFormProps {
     book: TBook
@@ -22,7 +21,7 @@ export const BooksEditButtonWithForm = ({
     const queryClient = useQueryClient()
     const [openEdit, setOpenEdit] = useState(false)
 
-    const { mutate } = useMutation({
+    const { mutate, isPending } = useMutation({
         mutationFn: editBook(book.id),
         onSuccess: () => {
             setOpenEdit(false)
@@ -65,7 +64,7 @@ export const BooksEditButtonWithForm = ({
             >
                 <FormProvider {...methods}>
                     <form onSubmit={handleSubmit(onSubmit)}>
-                        <BooksEditFormFields />
+                        <BooksEditFormFields isLoading={isPending} />
                     </form>
                 </FormProvider>
             </Modal>
@@ -73,7 +72,7 @@ export const BooksEditButtonWithForm = ({
     )
 }
 
-export const BooksEditFormFields = () => {
+export const BooksEditFormFields = ({ isLoading }: { isLoading: boolean }) => {
     const { data: authors } = useGetAuthors()
 
     return (
@@ -90,7 +89,9 @@ export const BooksEditFormFields = () => {
                     })) || []
                 }
             />
-            <Button type="submit">Zapisz</Button>
+            <Button loading={isLoading} type="submit">
+                Zapisz
+            </Button>
         </Stack>
     )
 }

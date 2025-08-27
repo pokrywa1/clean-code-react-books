@@ -18,7 +18,7 @@ export const AuthorsEditButtonWithForm = ({ author }: { author: TAuthor }) => {
 
     const queryClient = useQueryClient()
 
-    const { mutate } = useMutation({
+    const { mutate, isPending } = useMutation({
         mutationFn: editAuthor(author.id),
         onSuccess: () => {
             setOpened(false)
@@ -59,7 +59,9 @@ export const AuthorsEditButtonWithForm = ({ author }: { author: TAuthor }) => {
                     <Stack>
                         <InputTextRHF label="Imię" name="name" />
                         <InputTextRHF label="Email" name="email" />
-                        <Button type="submit">Zapisz</Button>
+                        <Button loading={isPending} type="submit">
+                            Zapisz
+                        </Button>
                     </Stack>
                 </form>
             </Modal>

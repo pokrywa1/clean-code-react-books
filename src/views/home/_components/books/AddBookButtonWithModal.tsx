@@ -13,7 +13,7 @@ export const AddBookButtonWithModal = () => {
     const queryClient = useQueryClient()
     const [openBook, setOpenBook] = useState(false)
 
-    const { mutate } = useMutation({
+    const { mutate, isPending } = useMutation({
         mutationFn: addBook,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['books'] })
@@ -53,7 +53,7 @@ export const AddBookButtonWithModal = () => {
             >
                 <FormProvider {...methods}>
                     <form onSubmit={handleSubmit(onSubmit)}>
-                        <BooksEditFormFields />
+                        <BooksEditFormFields isLoading={isPending} />
                     </form>
                 </FormProvider>
             </Modal>

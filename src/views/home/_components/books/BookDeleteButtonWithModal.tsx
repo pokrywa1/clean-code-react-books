@@ -15,7 +15,7 @@ export const BookDeleteButtonWithModal = ({
     const queryClient = useQueryClient()
     const [openDelete, setOpenDelete] = useState(false)
 
-    const { mutate } = useMutation({
+    const { mutate, isPending } = useMutation({
         mutationFn: deleteBook,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['books'] })
@@ -50,10 +50,15 @@ export const BookDeleteButtonWithModal = ({
                     <Button
                         variant="outline"
                         onClick={() => setOpenDelete(false)}
+                        loading={isPending}
                     >
                         Anuluj
                     </Button>
-                    <Button color="red" onClick={handleDelete}>
+                    <Button
+                        color="red"
+                        onClick={handleDelete}
+                        loading={isPending}
+                    >
                         Usuń
                     </Button>
                 </Group>
