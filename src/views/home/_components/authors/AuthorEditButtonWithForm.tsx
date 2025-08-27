@@ -15,15 +15,19 @@ import { InputTextRHF } from '../../../../app/components/inputs/InputText'
 
 export const AuthorEditButtonWithForm = ({ author }: { author: TAuthor }) => {
     const [opened, setOpened] = useState(false)
+    const onClose = () => {
+        setOpened(false)
+        methods.reset()
+    }
 
     const queryClient = useQueryClient()
 
     const { mutate, isPending } = useMutation({
         mutationFn: editAuthor(author.id),
         onSuccess: () => {
-            setOpened(false)
             queryClient.invalidateQueries({ queryKey: ['authors'] })
             notifyApiMessage.success('Author edited successfully')
+            onClose()
         },
         onError: () => {
             notifyApiMessage.error('Error editing author')
@@ -50,11 +54,7 @@ export const AuthorEditButtonWithForm = ({ author }: { author: TAuthor }) => {
             >
                 <TbPencil />
             </ActionIcon>
-            <Modal
-                opened={opened}
-                onClose={() => setOpened(false)}
-                title="Edytuj autora"
-            >
+            <Modal opened={opened} onClose={onClose} title="Edytuj autora">
                 <form onSubmit={methods.handleSubmit(onSubmit)}>
                     <Stack>
                         <InputTextRHF label="Imię" name="name" />

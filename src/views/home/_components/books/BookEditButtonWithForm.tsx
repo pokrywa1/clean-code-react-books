@@ -21,12 +21,17 @@ export const BooksEditButtonWithForm = ({
     const queryClient = useQueryClient()
     const [openEdit, setOpenEdit] = useState(false)
 
+    const onClose = () => {
+        setOpenEdit(false)
+        methods.reset()
+    }
+
     const { mutate, isPending } = useMutation({
         mutationFn: editBook(book.id),
         onSuccess: () => {
-            setOpenEdit(false)
             queryClient.invalidateQueries({ queryKey: ['books'] })
             notifyApiMessage.success('Book edited successfully')
+            onClose()
         },
         onError: () => {
             notifyApiMessage.error('Error editing book')
@@ -57,11 +62,7 @@ export const BooksEditButtonWithForm = ({
             >
                 <TbPencil />
             </ActionIcon>
-            <Modal
-                opened={openEdit}
-                onClose={() => setOpenEdit(false)}
-                title="Edytuj książkę"
-            >
+            <Modal opened={openEdit} onClose={onClose} title="Edytuj książkę">
                 <FormProvider {...methods}>
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <BookEditButtonWithForm isLoading={isPending} />

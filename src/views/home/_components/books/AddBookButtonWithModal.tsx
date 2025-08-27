@@ -12,13 +12,17 @@ import { zodResolver } from '@hookform/resolvers/zod'
 export const AddBookButtonWithModal = () => {
     const queryClient = useQueryClient()
     const [openBook, setOpenBook] = useState(false)
+    const onClose = () => {
+        methods.reset()
+        setOpenBook(false)
+    }
 
     const { mutate, isPending } = useMutation({
         mutationFn: addBook,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['books'] })
-            setOpenBook(false)
             notifyApiMessage.success('Book added successfully')
+            onClose()
         },
         onError: () => {
             notifyApiMessage.error('Error adding book')
@@ -46,11 +50,7 @@ export const AddBookButtonWithModal = () => {
             >
                 Dodaj książkę
             </Button>
-            <Modal
-                opened={openBook}
-                onClose={() => setOpenBook(false)}
-                title="Dodaj książkę"
-            >
+            <Modal opened={openBook} onClose={onClose} title="Dodaj książkę">
                 <FormProvider {...methods}>
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <BookEditButtonWithForm isLoading={isPending} />

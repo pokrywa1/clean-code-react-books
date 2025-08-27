@@ -18,9 +18,8 @@ export const AddAuthorButtonWithModal = () => {
         mutationFn: addAuthor,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['authors'] })
-            setOpenAuthor(false)
             notifyApiMessage.success('Author added successfully')
-            methods.reset()
+            onClose()
         },
         onError: () => {
             notifyApiMessage.error('Error adding author')
@@ -34,6 +33,11 @@ export const AddAuthorButtonWithModal = () => {
         mutate(data)
     }
 
+    const onClose = () => {
+        methods.reset()
+        setOpenAuthor(false)
+    }
+
     return (
         <FormProvider {...methods}>
             <Button
@@ -42,11 +46,7 @@ export const AddAuthorButtonWithModal = () => {
             >
                 Dodaj autora
             </Button>
-            <Modal
-                opened={openAuthor}
-                onClose={() => setOpenAuthor(false)}
-                title="Dodaj autora"
-            >
+            <Modal opened={openAuthor} onClose={onClose} title="Dodaj autora">
                 <form onSubmit={methods.handleSubmit(onSubmit)}>
                     <Stack>
                         <InputTextRHF label="Imię" name="name" />
