@@ -13,7 +13,7 @@ import { notifyApiMessage } from '../../../../lib/utils/errors'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { InputTextRHF } from '../../../../app/components/inputs/InputText'
 
-export const AuthorsEditButtonWithForm = ({ author }: { author: TAuthor }) => {
+export const AuthorEditButtonWithForm = ({ author }: { author: TAuthor }) => {
     const [opened, setOpened] = useState(false)
 
     const queryClient = useQueryClient()

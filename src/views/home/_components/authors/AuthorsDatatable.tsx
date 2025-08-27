@@ -1,7 +1,7 @@
 import { Group, Title, Card, Table, Stack } from '@mantine/core'
 import { useGetAuthors } from '../../../../api/authors/getAuthors'
 import { AddAuthorButtonWithModal } from './AddAuthorButtonWithModal'
-import { AuthorTableRow } from './AuthorTableRow'
+import { AuthorsTableRow } from './AuthorsTableRow'
 import { useState } from 'react'
 import { PaginatedQuery } from '../../../../app/components/PaginatedQuery'
 
@@ -31,7 +31,7 @@ export const AuthorsDatatable = () => {
                             </Table.Thead>
                             <Table.Tbody>
                                 {authors.map((author) => (
-                                    <AuthorTableRow
+                                    <AuthorsTableRow
                                         key={author.id}
                                         author={author}
                                     />

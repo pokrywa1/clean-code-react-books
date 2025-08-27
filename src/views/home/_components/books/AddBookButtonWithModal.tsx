@@ -5,7 +5,7 @@ import { TbPlus } from 'react-icons/tb'
 import { addBook, addBookSchema } from '../../../../api/books/addBook'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { TAddBook } from '../../../../types/book'
-import { BooksEditFormFields } from './BooksEditButtonWithForm'
+import { BookEditButtonWithForm } from './BookEditButtonWithForm'
 import { notifyApiMessage } from '../../../../lib/utils/errors'
 import { zodResolver } from '@hookform/resolvers/zod'
 
@@ -53,7 +53,7 @@ export const AddBookButtonWithModal = () => {
             >
                 <FormProvider {...methods}>
                     <form onSubmit={handleSubmit(onSubmit)}>
-                        <BooksEditFormFields isLoading={isPending} />
+                        <BookEditButtonWithForm isLoading={isPending} />
                     </form>
                 </FormProvider>
             </Modal>

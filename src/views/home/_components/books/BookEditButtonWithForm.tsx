@@ -64,7 +64,7 @@ export const BooksEditButtonWithForm = ({
             >
                 <FormProvider {...methods}>
                     <form onSubmit={handleSubmit(onSubmit)}>
-                        <BooksEditFormFields isLoading={isPending} />
+                        <BookEditButtonWithForm isLoading={isPending} />
                     </form>
                 </FormProvider>
             </Modal>
@@ -72,7 +72,11 @@ export const BooksEditButtonWithForm = ({
     )
 }
 
-export const BooksEditFormFields = ({ isLoading }: { isLoading: boolean }) => {
+export const BookEditButtonWithForm = ({
+    isLoading,
+}: {
+    isLoading: boolean
+}) => {
     const { data: authors } = useGetAuthors()
 
     return (

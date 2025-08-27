@@ -1,14 +1,15 @@
 import { Table, Group } from '@mantine/core'
 import { TBook } from '../../../../types/book'
-import { BooksEditButtonWithForm } from './BooksEditButtonWithForm'
-import { BookDeleteButtonWithModal } from './BookDeleteButtonWithModal'
-import React from 'react'
+import { BooksEditButtonWithForm } from './BookEditButtonWithForm'
 
-interface BookTableRowProps {
+import React from 'react'
+import { BookDeleteButtonWithModal } from './BookDeleteButtonWithModal'
+
+interface BooksTableRowProps {
     book: TBook
 }
 
-export const BookTableRow = React.memo(({ book }: BookTableRowProps) => {
+export const BooksTableRow = React.memo(({ book }: BooksTableRowProps) => {
     return (
         <Table.Tr>
             <Table.Td>{book.title}</Table.Td>

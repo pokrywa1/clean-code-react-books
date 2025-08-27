@@ -1,9 +1,9 @@
 import { Group, Title, Card, Table, Stack } from '@mantine/core'
 import { useGetBooks } from '../../../../api/books/getBooks'
 import { AddBookButtonWithModal } from './AddBookButtonWithModal'
-import { BookTableRow } from './BookTableRow'
 import { useState } from 'react'
 import { PaginatedQuery } from '../../../../app/components/PaginatedQuery'
+import { BooksTableRow } from './BooksTableRow'
 
 export const BooksDatatable = () => {
     const [page, setPage] = useState(1)
@@ -32,7 +32,7 @@ export const BooksDatatable = () => {
                             </Table.Thead>
                             <Table.Tbody>
                                 {books.map((book) => (
-                                    <BookTableRow key={book.id} book={book} />
+                                    <BooksTableRow key={book.id} book={book} />
                                 ))}
                             </Table.Tbody>
                         </Table>
