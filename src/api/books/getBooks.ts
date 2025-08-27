@@ -16,7 +16,7 @@ export const getBooks = (params: GetBooksParams = {}) => {
                 limit: params.limit ?? 10,
             },
         })
-        .then((res) => res.data)
+        .then(({ data }) => data)
 }
 
 export const useGetBooks = (params: GetBooksParams = {}) => {

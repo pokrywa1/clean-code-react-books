@@ -8,5 +8,5 @@ export const editAuthorSchema: z.ZodSchema<Omit<TEditAuthor, 'id'>> = z.object({
 })
 
 export const editAuthor = (id: number) => (data: TEditAuthor) => {
-    return api.patch(`/authors/${id}`, data).then((res) => res)
+    return api.patch(`/authors/${id}`, data).then(({ data }) => data)
 }

@@ -7,5 +7,5 @@ export const editBook = (id: string) => (data: TEditBook) => {
             ...data,
             authorId: data.authorId ? Number(data.authorId) : undefined,
         })
-        .then((res) => res.data)
+        .then(({ data }) => data)
 }

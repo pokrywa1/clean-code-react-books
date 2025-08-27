@@ -8,5 +8,5 @@ export const addAuthorSchema: z.ZodSchema<TAddAuthor> = z.object({
 })
 
 export const addAuthor = (data: TAddAuthor) => {
-    return api.post('/authors', data).then((res) => res.data)
+    return api.post('/authors', data).then(({data}) => data)
 }

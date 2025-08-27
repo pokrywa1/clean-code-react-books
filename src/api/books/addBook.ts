@@ -7,4 +7,4 @@ export const addBook = (book: TAddBook): Promise<TBook> =>
             ...book,
             authorId: Number(book.authorId),
         })
-        .then((res) => res.data)
+        .then(({ data }) => data)
