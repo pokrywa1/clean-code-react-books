@@ -1,7 +1,8 @@
 import { useQuery } from '@tanstack/react-query'
 import { api } from '../../lib/axios'
-import { TBook } from '../../types/book'
+import { BookSchema, TBook } from '../../types/book'
 import { PaginatedResponse } from '../../types/pagination'
+import { PaginatedResponseSchema } from '../../lib/utils/validation'
 
 export interface GetBooksParams {
     page?: number
@@ -16,7 +17,7 @@ export const getBooks = (params: GetBooksParams = {}) => {
                 limit: params.limit ?? 10,
             },
         })
-        .then(({ data }) => data)
+        .then(({ data }) => PaginatedResponseSchema(BookSchema).parse(data))
 }
 
 export const useGetBooks = (params: GetBooksParams = {}) => {
