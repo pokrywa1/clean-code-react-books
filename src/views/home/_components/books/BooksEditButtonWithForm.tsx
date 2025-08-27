@@ -36,7 +36,7 @@ export const BooksEditButtonWithForm = ({
         defaultValues: {
             title: book.title,
             genre: book.genre,
-            authorId: book.authorId.toString(),
+            authorId: book.authorId,
         },
     })
 

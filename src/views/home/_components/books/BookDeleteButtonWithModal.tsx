@@ -6,7 +6,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { notifyApiMessage } from '../../../../lib/utils/errors'
 
 interface BookDeleteButtonWithModalProps {
-    bookId: string
+    bookId: number
 }
 
 export const BookDeleteButtonWithModal = ({

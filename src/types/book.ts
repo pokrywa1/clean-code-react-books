@@ -1,19 +1,19 @@
 import { TAuthor } from './author'
 
 export interface TBook {
-    id: string
+    id: number
     title: string
     genre: string
-    authorId: string
+    authorId: number
     author?: TAuthor
 }
 
 export interface TAddBook {
     title: string
     genre: string
-    authorId: string
+    authorId: number
 }
 
 export interface TEditBook extends TAddBook {
-    id: string
+    id: number
 }
