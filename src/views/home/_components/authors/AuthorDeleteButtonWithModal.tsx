@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 import { TbTrash } from 'react-icons/tb'
 import { deleteAuthor } from '../../../../api/authors/deleteAuthor'
+import { notifyApiMessage } from '../../../../lib/utils/errors'
 
 export const AuthorDeleteButtonWithModal = ({
     authorId,
@@ -17,6 +18,10 @@ export const AuthorDeleteButtonWithModal = ({
         onSuccess: () => {
             setOpen(false)
             queryClient.invalidateQueries({ queryKey: ['authors'] })
+            notifyApiMessage.success('Author deleted successfully')
+        },
+        onError: () => {
+            notifyApiMessage.error('Error deleting author')
         },
     })
 

@@ -8,6 +8,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { TBook, TEditBook } from '../../../../types/book'
 import { InputSelectRHF } from '../../../../app/components/inputs/InputSelect'
 import { InputTextRHF } from '../../../../app/components/inputs/InputText'
+import { notifyApiMessage } from '../../../../lib/utils/errors'
 
 interface BooksEditButtonWithFormProps {
     book: TBook
@@ -24,6 +25,10 @@ export const BooksEditButtonWithForm = ({
         onSuccess: () => {
             setOpenEdit(false)
             queryClient.invalidateQueries({ queryKey: ['books'] })
+            notifyApiMessage.success('Book edited successfully')
+        },
+        onError: () => {
+            notifyApiMessage.error('Error editing book')
         },
     })
 

@@ -6,6 +6,7 @@ import { addBook } from '../../../../api/books/addBook'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { TAddBook } from '../../../../types/book'
 import { BooksEditFormFields } from './BooksEditButtonWithForm'
+import { notifyApiMessage } from '../../../../lib/utils/errors'
 
 export const AddBookButtonWithModal = () => {
     const queryClient = useQueryClient()
@@ -16,6 +17,10 @@ export const AddBookButtonWithModal = () => {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['books'] })
             setOpenBook(false)
+            notifyApiMessage.success('Book added successfully')
+        },
+        onError: () => {
+            notifyApiMessage.error('Error adding book')
         },
     })
 

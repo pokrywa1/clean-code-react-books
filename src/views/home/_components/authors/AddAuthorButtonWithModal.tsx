@@ -6,6 +6,7 @@ import { addAuthor } from '../../../../api/authors/addAuthor'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { TAddAuthor } from '../../../../types/author'
 import { InputTextRHF } from '../../../../app/components/inputs/InputText'
+import { notifyApiMessage } from '../../../../lib/utils/errors'
 
 export const AddAuthorButtonWithModal = () => {
     const queryClient = useQueryClient()
@@ -17,13 +18,17 @@ export const AddAuthorButtonWithModal = () => {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['authors'] })
             setOpenAuthor(false)
+            notifyApiMessage.success('Author added successfully')
+            methods.reset()
+        },
+        onError: () => {
+            notifyApiMessage.error('Error adding author')
         },
     })
 
     const methods = useForm<TAddAuthor>()
     const onSubmit: SubmitHandler<TAddAuthor> = (data) => {
         mutate(data)
-        methods.reset()
     }
 
     return (

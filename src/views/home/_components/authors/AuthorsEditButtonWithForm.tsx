@@ -6,6 +6,7 @@ import { editAuthor } from '../../../../api/authors/editAuthor'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { TAuthor, TEditAuthor } from '../../../../types/author'
+import { notifyApiMessage } from '../../../../lib/utils/errors'
 
 export const AuthorsEditButtonWithForm = ({ author }: { author: TAuthor }) => {
     const [opened, setOpened] = useState(false)
@@ -17,6 +18,10 @@ export const AuthorsEditButtonWithForm = ({ author }: { author: TAuthor }) => {
         onSuccess: () => {
             setOpened(false)
             queryClient.invalidateQueries({ queryKey: ['authors'] })
+            notifyApiMessage.success('Author edited successfully')
+        },
+        onError: () => {
+            notifyApiMessage.error('Error editing author')
         },
     })
 

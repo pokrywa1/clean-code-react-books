@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { TbTrash } from 'react-icons/tb'
 import { deleteBook } from '../../../../api/books/deleteBook'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { notifyApiMessage } from '../../../../lib/utils/errors'
 
 interface BookDeleteButtonWithModalProps {
     bookId: string
@@ -19,6 +20,10 @@ export const BookDeleteButtonWithModal = ({
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['books'] })
             setOpenDelete(false)
+            notifyApiMessage.success('Book deleted successfully')
+        },
+        onError: () => {
+            notifyApiMessage.error('Error deleting book')
         },
     })
 
